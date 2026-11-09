@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Level 1 Complete | ECOQUEST</title>
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Copperplate, Papyrus, fantasy;
+}
+body{
+    min-height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    overflow-y:auto;
+    background:
+    linear-gradient(
+        rgba(0,0,0,0.25),
+        rgba(0,0,0,0.25)
+    ),
+    url("bg4.jpg");
+    background-size:cover;
+    background-position:center;
+}
+/* Floating Stickers */
+.sticker{
+    position:absolute;
+    font-size:60px;
+    animation:float 4s ease-in-out infinite;
+}
+.s1{top:20px;left:30px;}
+.s2{top:50px;right:40px;}
+.s3{bottom:50px;left:50px;}
+.s4{bottom:40px;right:60px;}
+.s5{top:45%;left:2%;}
+.s6{top:45%;right:2%;}
+.s7{top:20%;left:15%;}
+.s8{top:20%;right:15%;}
+@keyframes float{
+    0%,100%{transform:translateY(0);}
+    50%{transform:translateY(-15px);}
+}
+/* Main Card */
+.container{
+    width:90%;
+    max-width:900px;
+    background:rgba(255,255,255,.95);
+    border-radius:30px;
+    padding:40px;
+    text-align:center;
+    box-shadow:0 15px 40px rgba(0,0,0,.35);
+}
+/* Title */
+.title{
+    font-size:50px;
+    color:#2E7D32;
+    font-weight:bold;
+    margin-bottom:10px;
+}
+#groupName{
+    color:#1B5E20;
+}
+/* Message */
+.message{
+    font-size:28px;
+    color:#222;
+    line-height:1.8;
+    margin:30px 0;
+}
+/* Button */
+button{
+    padding:15px 45px;
+    border:none;
+    border-radius:50px;
+    background:#43A047;
+    color:white;
+    font-size:22px;
+    cursor:pointer;
+    transition:.3s;
+}
+button:hover{
+    background:#2E7D32;
+    transform:scale(1.05);
+}
+.footer{
+margin-top:20px;
+font-size:18px;
+color:#555;
+}
+</style>
+</head>
+<body>
+<div class="sticker s1">🌍</div>
+<div class="sticker s2">🌱</div>
+<div class="sticker s3">♻️</div>
+<div class="sticker s4">💧</div>
+<div class="sticker s5">☀️</div>
+<div class="sticker s6">🌳</div>
+<div class="sticker s7">🌼</div>
+<div class="sticker s8">🍃</div>
+<div class="container">
+<div class="title">
+🎉 Congratulations! 🎉
+<br>
+<span id="groupName"></span>
+</div>
+<div class="message">
+✅ You have successfully completed the task!
+<br><br>
+Great job, Eco Warriors! 🌱
+</div>
+<button onclick="location.href='map.html'">
+🗺 Return to Map
+</button>
+<div class="footer">
+Learn • Play • Protect the Environment
+</div>
+</div>
+<script>
+// Display the group's name
+document.getElementById("groupName").innerHTML =
+localStorage.getItem("groupName") || "Eco Team";
+</script>
+</body>
+</html>

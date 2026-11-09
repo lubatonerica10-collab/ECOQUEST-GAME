@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>ECOQUEST - Level 3 Instructions</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+
+<style>
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+}
+
+body{
+
+height:100vh;
+
+display:flex;
+
+justify-content:center;
+
+align-items:center;
+
+font-family:'Poppins',sans-serif;
+
+background:
+linear-gradient(rgba(0,0,0,.45),rgba(0,0,0,.45)),
+url("bg8.jpg");
+
+background-size:cover;
+background-position:center;
+
+}
+
+/* Main Box */
+
+.container{
+
+width:90%;
+max-width:900px;
+
+background:rgba(255,255,255,.94);
+
+border-radius:30px;
+
+padding:45px;
+
+box-shadow:0 20px 50px rgba(0,0,0,.45);
+
+text-align:center;
+
+}
+
+/* Title */
+
+.title{
+
+font-family:'Orbitron',sans-serif;
+
+font-size:58px;
+
+font-weight:bold;
+
+color:#7CFC00;
+
+text-shadow:
+0 0 10px #7CFC00,
+0 0 20px #7CFC00,
+0 0 40px #32CD32,
+0 0 70px #00FF7F;
+
+animation:glow 2s infinite alternate;
+
+margin-bottom:10px;
+
+}
+
+@keyframes glow{
+
+from{
+
+text-shadow:
+0 0 8px #7CFC00,
+0 0 20px #32CD32;
+
+}
+
+to{
+
+text-shadow:
+0 0 15px #ADFF2F,
+0 0 35px #00FF7F,
+0 0 60px #7CFC00;
+
+}
+
+}
+
+.subtitle{
+
+font-size:28px;
+
+color:#2E7D32;
+
+font-weight:bold;
+
+margin-bottom:30px;
+
+}
+
+/* Rules */
+
+.rules{
+
+text-align:left;
+
+font-size:21px;
+
+line-height:2;
+
+color:#333;
+
+margin:auto;
+
+width:90%;
+
+}
+
+.rules li{
+
+margin-bottom:10px;
+
+}
+
+/* Tip */
+
+.tip{
+
+margin-top:30px;
+
+background:#E8F5E9;
+
+padding:20px;
+
+border-left:8px solid #4CAF50;
+
+border-radius:15px;
+
+font-size:20px;
+
+color:#1B5E20;
+
+}
+
+/* Button */
+
+button{
+
+margin-top:35px;
+
+padding:18px 55px;
+
+font-size:24px;
+
+font-weight:bold;
+
+border:none;
+
+border-radius:50px;
+
+background:#43A047;
+
+color:white;
+
+cursor:pointer;
+
+transition:.3s;
+
+box-shadow:0 10px 20px rgba(0,0,0,.3);
+
+}
+
+button:hover{
+
+background:#2E7D32;
+
+transform:scale(1.08);
+
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+<div class="title">
+LEVEL 3
+</div>
+
+<div class="subtitle">
+🔍 Environmental Word Search Challenge
+</div>
+
+<ol class="rules">
+
+<li>Find the word shown at the top of the screen.</li>
+
+<li>You only have <b>15 seconds</b> to find each word.</li>
+
+<li>Only <b>ONE word</b> will appear at a time.</li>
+
+<li>After finding the word, its definition will be displayed.</li>
+
+<li>If the timer reaches zero, the answer and definition will be shown automatically.</li>
+
+<li>The next word will appear after the definition.</li>
+
+<li>Complete all <b>5 words</b> to receive the passcode for the next level.</li>
+
+</ol>
+
+<div class="tip">
+
+<b>TIP:</b> Words may be hidden horizontally, vertically, diagonally, or backwards. Work together and look carefully!
+
+</div>
+
+<button onclick="location.href='ws.html'">
+
+START CHALLENGE →
+
+</button>
+
+</div>
+
+</body>
+</html>

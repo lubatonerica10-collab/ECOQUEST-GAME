@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>ECOQUEST MAP</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+
+<style>
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+body{
+    font-family:'Poppins',sans-serif;
+    height:100vh;
+    overflow:hidden;
+
+    /* Your Background */
+    background:url("bg4.jpg") center center/cover no-repeat;
+}
+
+/* Dark Overlay */
+
+body::before{
+    content:"";
+    position:absolute;
+    inset:0;
+    background:rgba(0,0,0,.25);
+}
+
+/* Title */
+
+.title{
+
+    position:absolute;
+    top:20px;
+    width:100%;
+    text-align:center;
+
+    font-family:'Orbitron',sans-serif;
+    font-size:50px;
+    color:white;
+
+    text-shadow:
+    0 0 10px #7CFC00,
+    0 0 25px #32CD32;
+
+}
+
+/* Welcome */
+
+.welcome{
+
+    position:absolute;
+    top:90px;
+    width:100%;
+    text-align:center;
+
+    color:white;
+    font-size:22px;
+
+}
+
+/* Map Container */
+
+.map{
+
+    position:relative;
+    width:100%;
+    height:100vh;
+
+}
+
+/* Path */
+
+svg{
+
+position:absolute;
+width:100%;
+height:100%;
+z-index:0;
+
+}
+
+/* Level Buttons */
+
+.level{
+
+position:absolute;
+
+width:95px;
+height:95px;
+
+border:none;
+
+border-radius:50%;
+
+font-size:30px;
+font-weight:bold;
+
+cursor:pointer;
+
+transition:.3s;
+
+color:white;
+
+}
+
+/* Level 1 */
+
+#level1{
+
+left:8%;
+bottom:15%;
+
+background:linear-gradient(45deg,#00c853,#64dd17);
+
+box-shadow:0 0 25px rgba(0,255,0,.8);
+
+}
+
+#level1:hover{
+
+transform:scale(1.15);
+
+}
+
+/* Locked Levels */
+
+.locked{
+
+background:#666;
+
+cursor:not-allowed;
+
+box-shadow:none;
+
+}
+
+/* Positions */
+
+#level2{
+
+left:28%;
+top:65%;
+
+}
+
+#level3{
+
+left:48%;
+top:40%;
+
+}
+
+#level4{
+
+left:68%;
+top:58%;
+
+}
+
+#level5{
+
+right:8%;
+top:18%;
+
+}
+
+/* Label */
+
+.label{
+
+position:absolute;
+
+bottom:30px;
+
+width:100%;
+
+text-align:center;
+
+color:white;
+
+font-size:18px;
+
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="title">
+🌿 ECOQUEST MAP 🌿
+</div>
+
+<div class="welcome">
+Choose your next destination!
+</div>
+
+<div class="map">
+
+<svg>
+
+<path
+d="M120 700
+Q280 600 430 500
+Q620 340 800 420
+Q980 520 1120 220"
+
+stroke="#D2B48C"
+stroke-width="18"
+fill="none"
+stroke-linecap="round"
+stroke-dasharray="20 15"/>
+
+</svg>
+
+<button
+class="level"
+id="level1"
+onclick="location.href='level1.html'">
+
+🌳
+
+</button>
+
+<button
+class="level locked"
+id="level2"
+onclick="locked()">
+
+🔒
+
+</button>
+
+<button
+class="level locked"
+id="level3"
+onclick="locked()">
+
+🔒
+
+</button>
+
+<button
+class="level locked"
+id="level4"
+onclick="locked()">
+
+🔒
+
+</button>
+
+<button
+class="level locked"
+id="level5"
+onclick="locked()">
+
+🏆
+
+</button>
+
+<div class="label">
+🌱 Start your adventure by completing <b>Level 1</b>.
+</div>
+
+</div>
+
+<script>
+
+function locked(){
+
+alert("🔒 This level is locked!\n\nComplete the previous level and scan the next QR Code to continue your ECOQUEST adventure.");
+
+}
+
+</script>
+
+</body>
+</html>

@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>ECOQUEST</title>
+
+<!-- Google Font -->
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+
+<style>
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+body{
+    height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    overflow-y:auto;
+
+    /* PUT YOUR BACKGROUND HERE */
+    background-image:url("bg1.jpg");
+
+    /* If you don't have one yet */
+    background-color:#1b4332;
+
+    background-size:cover;
+    background-position:center;
+    font-family:'Poppins',sans-serif;
+}
+
+.container{
+    text-align:center;
+    padding:50px;
+    border-radius:25px;
+    backdrop-filter:blur(8px);
+    background:rgba(255,255,255,.12);
+    border:2px solid rgba(255,255,255,.2);
+    box-shadow:0 15px 40px rgba(0,0,0,.4);
+}
+
+h1{
+
+    font-family:'Orbitron',sans-serif;
+    font-size:90px;
+    letter-spacing:8px;
+    color:#ffffff;
+
+    text-shadow:
+    0 0 10px #7CFC00,
+    0 0 20px #7CFC00,
+    0 0 40px #32CD32,
+    0 0 60px #228B22;
+
+    animation:glow 2s infinite alternate;
+}
+
+@keyframes glow{
+
+from{
+transform:scale(1);
+}
+
+to{
+transform:scale(1.05);
+}
+
+}
+
+p{
+    margin-top:20px;
+    color:white;
+    font-size:22px;
+    letter-spacing:2px;
+}
+
+.start-btn{
+
+    margin-top:45px;
+    padding:18px 70px;
+
+    font-size:28px;
+    font-weight:bold;
+    font-family:'Poppins',sans-serif;
+
+    border:none;
+    border-radius:50px;
+
+    cursor:pointer;
+
+    color:white;
+
+    background:linear-gradient(45deg,#00c853,#64dd17);
+
+    transition:.3s;
+
+    box-shadow:0 0 25px rgba(0,255,0,.5);
+
+}
+
+.start-btn:hover{
+
+transform:scale(1.1);
+
+box-shadow:
+0 0 15px #7CFC00,
+0 0 30px #32CD32,
+0 0 60px #00ff00;
+
+}
+
+.start-btn:active{
+transform:scale(.95);
+}
+
+.footer{
+
+margin-top:35px;
+color:white;
+font-size:14px;
+opacity:.8;
+
+}
+
+</style>
+
+</head>
+<body>
+
+<div class="container">
+
+<h1>ECOQUEST</h1>
+
+<p>Learn • Explore • Protect the Environment</p>
+
+<button class="start-btn" onclick="startGame()">
+START
+</button>
+
+<div class="footer">
+An Educational Learning Game
+</div>
+
+</div>
+
+<script>
+
+function startGame(){
+
+// Change this page later
+window.location.href="menu.html";
+
+}
+
+</script>
+
+</body>
+</html>

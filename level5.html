@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Environmental Health Scramble Game</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+        body {
+            background: #f0f9f4;
+            text-align: center;
+            padding: 30px;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+        h1 {
+            color: #2d6a4f;
+            margin-bottom: 20px;
+        }
+        .definition {
+            font-size: 18px;
+            color: #1b4332;
+            margin-bottom: 35px;
+            padding: 15px;
+            background: #d8f3dc;
+            border-radius: 8px;
+            font-style: italic;
+            line-height: 1.5;
+        }
+        .board {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 40px;
+            flex-wrap: wrap;
+        }
+        .slot {
+            width: 65px;
+            height: 65px;
+            background: #ffffff;
+            border: 3px solid #95d5b2;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            font-weight: bold;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .letter-rack {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+        .tile {
+            width: 65px;
+            height: 65px;
+            background: #40916c;
+            color: white;
+            border-radius: 8px;
+            font-size: 28px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: grab;
+            box-shadow: 0 3px 5px rgba(0,0,0,0.2);
+            transition: transform 0.1s;
+        }
+        .tile:active {
+            transform: scale(1.05);
+            cursor: grabbing;
+        }
+        .controls {
+            margin: 20px 0;
+        }
+        button {
+            padding: 12px 22px;
+            font-size: 16px;
+            border: none;
+            border-radius: 6px;
+            margin: 0 8px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: opacity 0.2s;
+        }
+        button:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
+        #prevBtn { background: #74c69d; color: #1b4332; }
+        #checkBtn { background: #2d6a4f; color: white; }
+        #shuffleBtn { background: #52b788; color: white; }
+        #revealBtn { background: #f59e0b; color: white; }
+        #nextBtn { background: #2196f3; color: white; }
+        #message {
+            margin-top: 25px;
+            font-size: 20px;
+            font-weight: bold;
+            min-height: 30px;
+        }
+        .correct { color: #2d6a4f; }
+        .wrong { color: #e63946; }
+        .progress {
+            margin-top: 15px;
+            font-size: 16px;
+            color: #40916c;
+            font-weight: bold;
+        }
+
+        /* --- Final Congratulations Screen --- */
+        #congratsScreen {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(45, 106, 79, 0.95);
+            color: white;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 40px;
+            z-index: 999;
+            animation: fadeIn 0.5s ease;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.9); }
+            to { opacity: 1; transform: scale(1); }
+        }
+        #congratsScreen h2 {
+            font-size: 36px;
+            margin-bottom: 20px;
+        }
+        #congratsScreen p {
+            font-size: 20px;
+            line-height: 1.7;
+            max-width: 700px;
+            margin-bottom: 30px;
+        }
+        #restartBtn {
+            background: #f59e0b;
+            color: white;
+            font-size: 18px;
+            padding: 14px 30px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Environmental Health Scramble</h1>
+
+    <div class="definition" id="definition"></div>
+
+    <div class="board" id="board"></div>
+    <div class="letter-rack" id="letterRack"></div>
+
+    <div class="controls">
+        <button id="prevBtn">Previous</button>
+        <button id="checkBtn">Check Answer</button>
+        <button id="shuffleBtn">Shuffle</button>
+        <button id="revealBtn">Show Answer</button>
+        <button id="nextBtn" disabled>Next ➡️</button>
+    </div>
+
+    <div class="progress" id="progress"></div>
+    <div id="message"></div>
+
+    <!-- Final Congratulations Screen -->
+    <div id="congratsScreen">
+        <h2>🎉 Congratulations! 🎉</h2>
+        <p>Great job completing all the levels! You have learned about key factors that affect our environment and health. Remember: protecting clean air, safe water, proper waste management, and our natural surroundings helps keep our communities healthy, safe, and strong. Thank you for learning — let’s all work together for a healthier planet and a better future!</p>
+        <button id="restartBtn">Play Again</button>
+    </div>
+
+    <script>
+        const topics = [
+            {
+                word: "AIR QUALITY",
+                definition: "Poor air quality can lead to respiratory issues, cardiovascular diseases, and reduced quality of life."
+            },
+            {
+                word: "WATER QUALITY",
+                definition: "Contaminated water sources can cause a range of health problems, including gastrointestinal diseases and long-term developmental issues in children."
+            },
+            {
+                word: "WASTE MANAGEMENT",
+                definition: "Ineffective waste disposal leads to pollution, affecting both land and water. Sustainable waste management practices, like recycling and composting, can mitigate these effects."
+            },
+            {
+                word: "CHEMICAL EXPOSURE",
+                definition: "Pesticides and industrial chemicals can have detrimental effects on health. Understanding these risks allows communities to advocate for safer alternatives."
+            },
+            {
+                word: "CLIMATE CHANGE",
+                definition: "Altered weather patterns affect food security and increase the prevalence of diseases. Communities can adopt practices to reduce greenhouse gas emissions."
+            },
+            {
+                word: "BIODIVERSITY",
+                definition: "A healthy ecosystem contributes to overall community health. Loss of biodiversity can lead to ecosystem collapse, affecting food sources and clean air."
+            },
+            {
+                word: "URBANIZATION",
+                definition: "Rapid urban growth can lead to overcrowding, inadequate housing, and increased pollution. Sustainable urban planning can address these challenges."
+            },
+            {
+                word: "TRANSPORTATION",
+                definition: "Green transportation methods, such as cycling and public transport, reduce pollution and promote physical health."
+            },
+            {
+                word: "ENERGY CONSUMPTION",
+                definition: "Sustainable energy practices, like solar and wind energy, minimize environmental impacts and promote health."
+            },
+            {
+                word: "EDUCATION AND AWARENESS",
+                definition: "Promoting environmental education helps communities understand the importance of sustainability and encourages action towards health promotion."
+            }
+        ];
+
+        let currentIndex = 0;
+        let correctWord = "";
+        let shuffledLetters = [];
+
+        const definitionEl = document.getElementById("definition");
+        const board = document.getElementById("board");
+        const letterRack = document.getElementById("letterRack");
+        const messageEl = document.getElementById("message");
+        const progressEl = document.getElementById("progress");
+        const congratsScreen = document.getElementById("congratsScreen");
+        const nextBtn = document.getElementById("nextBtn");
+
+        function loadCurrentTopic() {
+            messageEl.textContent = "";
+            messageEl.className = "";
+            board.innerHTML = "";
+            letterRack.innerHTML = "";
+            nextBtn.disabled = true; // Disable Next button until correct
+
+            const current = topics[currentIndex];
+            correctWord = current.word;
+            definitionEl.textContent = current.definition;
+            progressEl.textContent = `Topic ${currentIndex + 1} of ${topics.length}`;
+
+            for (let char of correctWord) {
+                const slot = document.createElement("div");
+                slot.className = "slot";
+                if (char === " ") {
+                    slot.textContent = " ";
+                    slot.style.border = "none";
+                    slot.style.background = "transparent";
+                    slot.style.boxShadow = "none";
+                } else {
+                    slot.ondragover = allowDrop;
+                    slot.ondrop = drop;
+                }
+                board.appendChild(slot);
+            }
+
+            const lettersOnly = correctWord.replace(/\s/g, "").split("");
+            shuffledLetters = [...lettersOnly].sort(() => Math.random() - 0.5);
+            renderTiles();
+        }
+
+        function renderTiles() {
+            letterRack.innerHTML = "";
+            shuffledLetters.forEach((letter, index) => {
+                const tile = document.createElement("div");
+                tile.className = "tile";
+                tile.textContent = letter;
+                tile.draggable = true;
+                tile.dataset.index = index;
+                tile.ondragstart = drag;
+                letterRack.appendChild(tile);
+            });
+        }
+
+        function allowDrop(e) {
+            e.preventDefault();
+        }
+        function drag(e) {
+            e.dataTransfer.setData("text/plain", e.target.textContent);
+            e.dataTransfer.setData("sourceIndex", e.target.dataset.index);
+        }
+        function drop(e) {
+            e.preventDefault();
+            const letter = e.dataTransfer.getData("text/plain");
+            const sourceIndex = e.dataTransfer.getData("sourceIndex");
+
+            if (!e.target.textContent) {
+                e.target.textContent = letter;
+                shuffledLetters.splice(sourceIndex, 1);
+                renderTiles();
+            }
+        }
+
+        function checkAnswer() {
+            const placed = Array.from(board.children).map(slot => slot.textContent).join("");
+            if (placed === correctWord) {
+                messageEl.textContent = "✅ Correct! Well done!";
+                messageEl.className = "correct";
+                nextBtn.disabled = false; // Enable Next button
+
+                // If it's the last topic, show congratulations when Next is clicked
+                if (currentIndex === topics.length - 1) {
+                    nextBtn.textContent = "Finish 🎉";
+                }
+            } else {
+                messageEl.textContent = "❌ Not quite, try again!";
+                messageEl.className = "wrong";
+                nextBtn.disabled = true;
+            }
+        }
+
+        function shuffleLetters() {
+            shuffledLetters.sort(() => Math.random() - 0.5);
+            renderTiles();
+        }
+
+        function revealAnswer() {
+            Array.from(board.children).forEach((slot, i) => {
+                slot.textContent = correctWord[i];
+            });
+            shuffledLetters = [];
+            renderTiles();
+            messageEl.textContent = "💡 Answer revealed!";
+            messageEl.className = "correct";
+            nextBtn.disabled = false;
+            if (currentIndex === topics.length - 1) nextBtn.textContent = "Finish 🎉";
+        }
+
+        document.getElementById("prevBtn").addEventListener("click", () => {
+            if (currentIndex > 0) {
+                currentIndex--;
+                loadCurrentTopic();
+            }
+        });
+
+        nextBtn.addEventListener("click", () => {
+            if (currentIndex < topics.length - 1) {
+                currentIndex++;
+                loadCurrentTopic();
+            } else {
+                // Show congratulations when finishing last topic
+                congratsScreen.style.display = "flex";
+            }
+        });
+
+        document.getElementById("checkBtn").addEventListener("click", checkAnswer);
+        document.getElementById("shuffleBtn").addEventListener("click", shuffleLetters);
+        document.getElementById("revealBtn").addEventListener("click", revealAnswer);
+        document.getElementById("restartBtn").addEventListener("click", () => {
+            congratsScreen.style.display = "none";
+            currentIndex = 0;
+            loadCurrentTopic();
+        });
+
+        window.onload = loadCurrentTopic;
+    </script>
+</body>
+</html>

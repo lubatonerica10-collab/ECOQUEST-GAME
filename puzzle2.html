@@ -1,0 +1,40 @@
+
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Puzzle 2</title>
+<style>
+body{margin:0;font-family:Arial;background:linear-gradient(135deg,#d8ffd8,#6ac96a);display:flex;flex-direction:column;align-items:center}
+h1{color:#145214}
+#top{display:flex;gap:30px;font-size:22px;font-weight:bold;margin:10px}
+#board{display:grid;grid-template-columns:repeat(3,120px);grid-template-rows:repeat(3,120px);gap:4px;background:#145214;padding:4px}
+.tile{width:120px;height:120px;border:1px solid #fff;background-image:url("pic2.jpg");background-size:360px 360px;cursor:pointer}
+#msg{margin-top:15px;font-size:22px}
+</style></head><body>
+<h1>🧩 ECOQUEST Puzzle 2</h1>
+<div id="top"><div>⏰ <span id="time">02:00</span></div><div>⭐ Score: <span id="score">20</span></div></div>
+<div id="board"></div><div id="msg"></div>
+<script>
+const board=document.getElementById("board");
+let arr=[0,1,2,3,4,5,6,7,8];
+for(let i=arr.length-1;i>0;i--){let j=Math.floor(Math.random()*(i+1));[arr[i],arr[j]]=[arr[j],arr[i]]}
+let first=null;
+function draw(){
+ board.innerHTML="";
+ arr.forEach((n,i)=>{
+  const d=document.createElement("div");
+  d.className="tile";
+  d.style.backgroundPosition=`-${(n%3)*120}px -${Math.floor(n/3)*120}px`;
+  d.onclick=()=>{if(first===null){first=i;d.style.outline='4px solid yellow';}else{[arr[first],arr[i]]=[arr[i],arr[first]];first=null;draw();}};
+  board.appendChild(d);
+ });
+ if(arr.every((v,i)=>v===i)){clearInterval(timer);msg.textContent="🎉 Puzzle Complete!";setTimeout(()=>location.href="puzzle3.html",2000);}
+}
+let sec=120;
+const timer=setInterval(()=>{
+ sec--;
+ time.textContent=`${String(Math.floor(sec/60)).padStart(2,'0')}:${String(sec%60).padStart(2,'0')}`;
+ if(sec<=0){clearInterval(timer);document.getElementById("score").textContent="10";alert("Time's up! You receive 10 points.");location.href="puzzle3.html";}
+},1000);
+draw();
+</script>
+</body></html>

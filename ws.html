@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Eco & Health Word Search</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+        body {
+            background: #f0f8f4;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+        }
+        h1 {
+            color: #2d573b;
+        }
+        .info-panel {
+            background: white;
+            padding: 18px 25px;
+            border-radius: 10px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.12);
+            margin-bottom: 20px;
+            width: 100%;
+            max-width: 750px;
+            text-align: center;
+        }
+        #timer {
+            font-size: 26px;
+            font-weight: bold;
+            color: #dc2626;
+            margin: 12px 0;
+        }
+        #current-word {
+            font-size: 24px;
+            font-weight: bold;
+            color: #4f46e5;
+            margin: 10px 0;
+        }
+        #hint {
+            font-style: italic;
+            color: #1e3a29;
+            margin-top: 10px;
+            padding: 12px 16px;
+            background: #e0e7ff;
+            border-radius: 8px;
+            line-height: 1.5;
+            font-size: 16px;
+        }
+        /* ALL DEFINITIONS & HEALTH BOX — appears after ALL words found, BEFORE congratulations */
+        #all-info-box {
+            display: none;
+            background: #f0fdf4;
+            border: 2px solid #22c55e;
+            border-radius: 12px;
+            padding: 25px;
+            margin: 20px 0;
+            max-width: 750px;
+            width: 100%;
+        }
+        #all-info-box h2 {
+            text-align: center;
+            color: #15803d;
+            margin-top: 0;
+            margin-bottom: 20px;
+        }
+        .word-info {
+            border-bottom: 1px solid #bbf7d0;
+            padding: 15px 0;
+        }
+        .word-info:last-child {
+            border-bottom: none;
+        }
+        .word-info h3 {
+            color: #166534;
+            margin: 0 0 8px 0;
+            font-size: 17px;
+        }
+        .word-info p {
+            margin: 6px 0;
+            color: #1f2937;
+            font-size: 15px;
+            line-height: 1.6;
+        }
+        #grid {
+            display: grid;
+            grid-template-columns: repeat(25, 28px);
+            gap: 2px;
+            background: #1e293b;
+            padding: 5px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+        }
+        .cell {
+            width: 28px;
+            height: 28px;
+            background: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            cursor: pointer;
+            border-radius: 2px;
+            user-select: none;
+            font-size: 16px;
+            transition: all 0.2s ease;
+        }
+        .cell.selected {
+            background: #fef08a;
+            color: #854d0e;
+            box-shadow: inset 0 0 0 2px #ca8a04;
+        }
+        .cell.found {
+            background: #8b5cf6;
+            color: white;
+            box-shadow: inset 0 0 0 2px #6d28d9;
+        }
+        button {
+            padding: 12px 24px;
+            font-size: 17px;
+            background: #4f46e5;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+        button:hover {
+            background: #4338ca;
+        }
+        #status {
+            margin-top: 18px;
+            font-size: 19px;
+            font-weight: bold;
+            color: #4f46e5;
+        }
+        /* CONGRATULATIONS — appears LAST */
+        #congrats-box {
+            display: none;
+            background: #ffffff;
+            border: 2px solid #8b5cf6;
+            border-radius: 12px;
+            padding: 30px;
+            margin-top: 10px;
+            max-width: 600px;
+            box-shadow: 0 4px 15px rgba(139, 92, 246, 0.2);
+            text-align: center;
+        }
+        #congrats-box h2 {
+            color: #6d28d9;
+            margin-top: 0;
+            font-size: 28px;
+        }
+        #congrats-box p {
+            font-size: 18px;
+            line-height: 1.7;
+            color: #374151;
+        }
+        .return-btn {
+            margin-top: 20px;
+            padding: 14px 35px;
+            font-size: 18px;
+            background: #4f46e5;
+            color: white;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        .return-btn:hover {
+            background: #4338ca;
+            transform: scale(1.05);
+        }
+        .easy-hint {
+            font-size: 15px;
+            color: #4f46e5;
+            margin-top: 10px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <h1>Eco & Health Word Search</h1>
+    <div class="info-panel">
+        <p>⏱ Time Left: <span id="timer">180</span> sec</p>
+        <p>🔍 Find this word:</p>
+        <div id="current-word">—</div>
+        <div id="hint">Press Start Game to begin!</div>
+        <p class="easy-hint">💡 All words go LEFT → RIGHT! Click letters in order!</p>
+        <p style="margin-top:10px;">📊 Progress: <span id="progress">0 / 5</span></p>
+    </div>
+
+    <div id="grid"></div>
+    <button onclick="startGame()">Start Game</button>
+    <div id="status"></div>
+
+    <!-- ✅ ALL DEFINITIONS & HEALTH EFFECTS → appears AFTER ALL words found, BEFORE congratulations -->
+    <div id="all-info-box">
+        <h2>📚 What You've Learned</h2>
+        <div id="info-content"></div>
+    </div>
+
+    <!-- 🎉 CONGRATULATIONS → appears LAST -->
+    <div id="congrats-box">
+        <h2>🎉 Level Complete! 🎉</h2>
+        <p><strong>Congratulations on finishing this level!</strong></p>
+        <p>You have successfully found all the hidden words and learned important concepts about environmental health, sustainability, biodiversity, and protecting our planet.</p>
+        <p>Great job, Eco Warrior! Keep up the amazing work and continue spreading awareness to help build a greener, healthier future for everyone. 🌍🌱</p>
+        <button class="return-btn" onclick="location.href='map4.html'">
+            🗺 Return to Map
+        </button>
+    </div>
+
+    <script>
+        const wordList = [
+            { 
+                word: "BIODIVERSITY", 
+                hint: "Variety of life on Earth; healthy = clean air & food",
+                meaning: "Biodiversity refers to the variety of all living things on our planet — plants, animals, insects, and microorganisms.",
+                healthImpact: "A rich variety of life means cleaner air, safer water, better food, and natural medicines. When biodiversity is lost, diseases spread more easily and our food supply becomes less safe."
+            },
+            { 
+                word: "URBANIZATION", 
+                hint: "City growth; brings challenges like pollution & crowding",
+                meaning: "Urbanization is the increase in people living in cities and towns as more areas become developed and built up.",
+                healthImpact: "When cities grow too fast without planning, pollution rises, housing becomes crowded, and diseases spread faster. But with green spaces and clean planning, cities can support healthy living."
+            },
+            { 
+                word: "TRANSPORTATION", 
+                hint: "Moving people; green methods = less pollution",
+                meaning: "Transportation is how people and goods move from place to place — by car, bus, train, bicycle, or walking.",
+                healthImpact: "Cars and factories create air pollution that causes lung diseases, allergies, and breathing problems. Choosing walking, cycling, or public transport keeps air clean and keeps our bodies healthy too."
+            },
+            { 
+                word: "ENERGYCONSUMPTION", 
+                hint: "Using power; solar & wind = cleaner choices",
+                meaning: "Energy consumption means how much power we use for homes, schools, transport, and industries.",
+                healthImpact: "Burning coal, oil, and gas creates smoke and toxic air that harms our lungs and causes sickness. Using sunlight, wind, and water for energy keeps air pure and protects everyone's health."
+            },
+            { 
+                word: "EDUCATIONANDAWARENES", 
+                hint: "Sharing knowledge; inspires action to protect our planet",
+                meaning: "Education and awareness means teaching people about environmental problems and how to solve them.",
+                healthImpact: "When people understand how nature and health connect, they make better choices — recycling, planting trees, saving water, and keeping surroundings clean. Knowledge leads to healthier communities!"
+            }
+        ];
+
+        const GRID_SIZE = 25;
+        const TIME_LIMIT = 180;
+        let grid = [];
+        let placedWords = [];
+        let currentWordIndex = 0;
+        let selectedCells = [];
+        let foundWords = []; // Store found words to show all at the end
+        let timer;
+        let timeLeft;
+
+        const directions = [ {dx: 1, dy: 0} ];
+
+        function initGrid() {
+            grid = Array.from({ length: GRID_SIZE }, () => Array(GRID_SIZE).fill(''));
+            placedWords = [];
+        }
+
+        function canPlaceWord(word, x, y) {
+            const len = word.length;
+            for (let i = 0; i < len; i++) {
+                const nx = x + i;
+                const ny = y;
+                if (nx >= GRID_SIZE) return false;
+                if (grid[ny][nx] !== '' && grid[ny][nx] !== word[i]) return false;
+            }
+            return true;
+        }
+
+        function placeWord(word, row) {
+            const len = word.length;
+            let maxX = GRID_SIZE - len;
+            for (let x = 2; x <= maxX; x++) {
+                if (canPlaceWord(word, x, row)) {
+                    for (let i = 0; i < len; i++) {
+                        grid[row][x + i] = word[i];
+                    }
+                    placedWords.push({ word, x, y: row, dir: {dx:1, dy:0}, length: len });
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        function fillEmptyCells() {
+            const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+            for (let y = 0; y < GRID_SIZE; y++) {
+                for (let x = 0; x < GRID_SIZE; x++) {
+                    if (grid[y][x] === '') {
+                        grid[y][x] = letters[Math.floor(Math.random() * letters.length)];
+                    }
+                }
+            }
+        }
+
+        function drawGrid() {
+            const gridEl = document.getElementById('grid');
+            gridEl.innerHTML = '';
+            for (let y = 0; y < GRID_SIZE; y++) {
+                for (let x = 0; x < GRID_SIZE; x++) {
+                    const cell = document.createElement('div');
+                    cell.className = 'cell';
+                    cell.textContent = grid[y][x];
+                    cell.dataset.x = x;
+                    cell.dataset.y = y;
+                    cell.onclick = () => selectCell(x, y, cell);
+                    gridEl.appendChild(cell);
+                }
+            }
+        }
+
+        function selectCell(x, y, el) {
+            if (el.classList.contains('found')) return;
+            if (selectedCells.length > 0) {
+                const last = selectedCells[selectedCells.length - 1];
+                if (x !== last.x + 1 || y !== last.y) {
+                    selectedCells = [];
+                    document.querySelectorAll('.cell.selected').forEach(c => c.classList.remove('selected'));
+                }
+            }
+            if (selectedCells.some(c => c.x === x && c.y === y)) {
+                el.classList.remove('selected');
+                selectedCells = selectedCells.filter(c => !(c.x === x && c.y === y));
+            } else {
+                el.classList.add('selected');
+                selectedCells.push({ x, y });
+            }
+            checkSelection();
+        }
+
+        function checkSelection() {
+            const current = wordList[currentWordIndex].word;
+            const wordData = placedWords.find(w => w.word === current);
+            if (!wordData) return;
+
+            const expected = [];
+            for (let i = 0; i < current.length; i++) {
+                expected.push({ x: wordData.x + i, y: wordData.y });
+            }
+
+            if (selectedCells.length === expected.length) {
+                let allMatch = true;
+                for (let i = 0; i < expected.length; i++) {
+                    if (selectedCells[i].x !== expected[i].x || selectedCells[i].y !== expected[i].y) {
+                        allMatch = false;
+                        break;
+                    }
+                }
+                if (allMatch) {
+                    clearInterval(timer);
+                    markAsFound(expected);
+                    foundWords.push(wordList[currentWordIndex]); // Save word info
+                    setTimeout(nextWord, 2000);
+                }
+            }
+        }
+
+        function markAsFound(coords) {
+            coords.forEach(({x, y}) => {
+                const cell = document.querySelector(`[data-x="${x}"][data-y="${y}"]`);
+                if (cell) {
+                    cell.classList.remove('selected');
+                    cell.classList.add('found');
+                }
+            });
+            selectedCells = [];
+        }
+
+        function showHint() {
+            document.getElementById('hint').textContent = "💡 " + wordList[currentWordIndex].hint;
+        }
+
+        function startTimer() {
+            timeLeft = TIME_LIMIT;
+            document.getElementById('timer').textContent = timeLeft;
+            timer = setInterval(() => {
+                timeLeft--;
+                document.getElementById('timer').textContent = timeLeft;
+                if (timeLeft <= 0) {
+                    clearInterval(timer);
+                    document.getElementById('status').textContent = "⏰ Time's Up!";
+                    document.getElementById('current-word').textContent = "—";
+                    document.getElementById('hint').textContent = "";
+                }
+            }, 1000);
+        }
+
+        function showAllLearnedInfo() {
+            // Build all definitions + health effects together
+            let html = '';
+            foundWords.forEach(item => {
+                html += `
+                    <div class="word-info">
+                        <h3>✅ ${item.word}</h3>
+                        <p><strong>Meaning:</strong> ${item.meaning}</p>
+                        <p><strong>How it affects our health:</strong> ${item.healthImpact}</p>
+                    </div>
+                `;
+            });
+            document.getElementById('info-content').innerHTML = html;
+            document.getElementById('all-info-box').style.display = 'block'; // Show ALL info FIRST
+        }
+
+        function nextWord() {
+            currentWordIndex++;
+            document.getElementById('progress').textContent = `${currentWordIndex} / ${wordList.length}`;
+            
+            // ✅ ALL words found → show ALL definitions + health effects FIRST
+            if (currentWordIndex >= wordList.length) {
+                clearInterval(timer);
+                document.getElementById('status').textContent = "";
+                document.getElementById('current-word').textContent = "—";
+                document.getElementById('hint').textContent = "🎉 All words found! Great job!";
+                
+                showAllLearnedInfo(); // 📚 Show all meanings & health effects FIRST
+                
+                // THEN show congratulations after a short delay
+                setTimeout(() => {
+                    document.getElementById('congrats-box').style.display = 'block';
+                }, 1500);
+                return;
+            }
+            document.getElementById('current-word').textContent = wordList[currentWordIndex].word;
+            showHint();
+            startTimer();
+        }
+
+        function startGame() {
+            initGrid();
+            wordList.forEach((item, idx) => {
+                placeWord(item.word, 2 + idx * 5);
+            });
+            fillEmptyCells();
+            drawGrid();
+            currentWordIndex = 0;
+            foundWords = [];
+            selectedCells = [];
+            document.getElementById('progress').textContent = `0 / ${wordList.length}`;
+            document.getElementById('status').textContent = "";
+            document.getElementById('congrats-box').style.display = 'none';
+            document.getElementById('all-info-box').style.display = 'none';
+            document.getElementById('current-word').textContent = wordList[0].word;
+            showHint();
+            startTimer();
+        }
+    </script>
+</body>
+</html>

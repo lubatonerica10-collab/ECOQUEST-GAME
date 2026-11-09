@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Environmental Health Sorting Game</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        binGreen: '#2ecc71',
+                        binRed: '#e74c3c',
+                    },
+                    fontFamily: {
+                        sans: ['Segoe UI', 'system-ui', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style type="text/tailwindcss">
+        @layer utilities {
+            .content-auto {
+                content-visibility: auto;
+            }
+            .dragging {
+                opacity: 0.6;
+                transform: scale(1.05);
+            }
+            .card {
+                transition: all 0.2s ease;
+                cursor: grab;
+            }
+            .card:active {
+                cursor: grabbing;
+            }
+            .bin-hover {
+                box-shadow: 0 0 0 3px rgba(255,255,255,0.8), 0 0 15px rgba(0,0,0,0.3);
+                transform: scale(1.03);
+            }
+        }
+    </style>
+</head>
+<body class="bg-sky-50 min-h-screen font-sans">
+    <!-- Main Game Screen -->
+    <div id="game-screen" class="container mx-auto px-4 py-8 max-w-4xl">
+        <header class="text-center mb-8">
+            <h1 class="text-3xl md:text-4xl font-bold text-emerald-700 mb-2">🌍 Environmental Health Sorting Game</h1>
+            <p class="text-gray-700 mb-4">Drag the cards to the correct trash can! ⏱️ Time limit: 60 seconds</p>
+            <div class="flex justify-center gap-6 text-lg font-medium">
+                <span class="px-4 py-2 rounded-full bg-binGreen text-white">🟢 Green = Good Benefits</span>
+                <span class="px-4 py-2 rounded-full bg-binRed text-white">🔴 Red = Bad Effects/Problems</span>
+            </div>
+            <div class="mt-6 text-2xl font-bold text-amber-700">Time Left: <span id="timer">60</span>s</div>
+        </header>
+        <!-- Card Area -->
+        <div id="card-area" class="bg-white p-6 rounded-xl shadow-md mb-10 min-h-[180px] flex flex-wrap gap-4 justify-center items-center border-2 border-dashed border-gray-300">
+            <p class="text-gray-500 italic">Cards will appear here...</p>
+        </div>
+        <!-- Trash Cans -->
+        <div class="flex flex-col md:flex-row justify-center gap-10 md:gap-20 items-center">
+            <!-- Green Bin -->
+            <div id="bin-green" class="bin w-48 h-64 bg-binGreen rounded-b-3xl rounded-t-lg shadow-lg flex flex-col items-center justify-center p-3 border-4 border-green-800" data-type="good">
+                <div class="text-white text-center">
+                    <i class="fa fa-trash fa-4x mb-2"></i>
+                    <p class="font-bold text-lg">Green Bin</p>
+                    <p class="text-sm">Good Benefits</p>
+                </div>
+            </div>
+            <!-- Red Bin -->
+            <div id="bin-red" class="bin w-48 h-64 bg-binRed rounded-b-3xl rounded-t-lg shadow-lg flex flex-col items-center justify-center p-3 border-4 border-red-800" data-type="bad">
+                <div class="text-white text-center">
+                    <i class="fa fa-trash fa-4x mb-2"></i>
+                    <p class="font-bold text-lg">Red Bin</p>
+                    <p class="text-sm">Bad Effects</p>
+                </div>
+            </div>
+        </div>
+        <div class="text-center mt-10">
+            <button id="start-btn" class="bg-emerald-600 hover:bg-emerald-700 text-white px-8 py-3 rounded-lg text-lg font-medium shadow-md transition">Start Game</button>
+        </div>
+    </div>
+
+    <!-- ✅ LEARNING SUMMARY: Definitions of Good & Bad → Appears AFTER game, BEFORE congratulations -->
+    <div id="summary-screen" class="hidden container mx-auto px-4 py-8 max-w-4xl">
+        <h2 class="text-3xl font-bold text-center text-emerald-700 mb-8">📚 What You've Learned</h2>
+        <!-- Good Benefits Section -->
+        <div class="bg-green-50 border-2 border-emerald-400 rounded-xl p-6 mb-8">
+            <h3 class="text-2xl font-bold text-emerald-700 mb-4">✅ Good Benefits & Their Meanings</h3>
+            <div class="grid md:grid-cols-2 gap-4">
+                <div class="bg-white p-4 rounded-lg shadow-sm">
+                    <strong class="text-emerald-700">Clean Air</strong>
+                    <p class="text-gray-600 text-sm mt-1">Fresh, unpolluted air helps us breathe easily and keeps our lungs strong and healthy.</p>
+                </div>
+                <div class="bg-white p-4 rounded-lg shadow-sm">
+                    <strong class="text-emerald-700">Safe Drinking Water</strong>
+                    <p class="text-gray-600 text-sm mt-1">Clean, pure water prevents sickness and keeps our bodies hydrated and functioning well.</p>
+                </div>
+                <div class="bg-white p-4 rounded-lg shadow-sm">
+                    <strong class="text-emerald-700">Healthy Soil</strong>
+                    <p class="text-gray-600 text-sm mt-1">Rich, nutrient-filled soil grows healthy food so we stay strong and energetic.</p>
+                </div>
+                <div class="bg-white p-4 rounded-lg shadow-sm">
+                    <strong class="text-emerald-700">Lower Disease Risk</strong>
+                    <p class="text-gray-600 text-sm mt-1">A clean environment means fewer germs, toxins, and diseases spread among people.</p>
+                </div>
+                <div class="bg-white p-4 rounded-lg shadow-sm">
+                    <strong class="text-emerald-700">Biodiversity</strong>
+                    <p class="text-gray-600 text-sm mt-1">Many different plants and animals keep nature balanced and support all life on Earth.</p>
+                </div>
+                <div class="bg-white p-4 rounded-lg shadow-sm">
+                    <strong class="text-emerald-700">Fresh Food Supply</strong>
+                    <p class="text-gray-600 text-sm mt-1">Healthy ecosystems grow plenty of nutritious food so no one goes hungry.</p>
+                </div>
+                <div class="bg-white p-4 rounded-lg shadow-sm">
+                    <strong class="text-emerald-700">Cooler Temperatures</strong>
+                    <p class="text-gray-600 text-sm mt-1">Trees and green spaces cool the air, making our surroundings comfortable and safe.</p>
+                </div>
+                <div class="bg-white p-4 rounded-lg shadow-sm">
+                    <strong class="text-emerald-700">Mental Wellbeing</strong>
+                    <p class="text-gray-600 text-sm mt-1">Being in nature calms our minds, reduces stress, and makes us feel happier.</p>
+                </div>
+            </div>
+        </div>
+        <!-- Bad Effects Section -->
+        <div class="bg-red-50 border-2 border-red-400 rounded-xl p-6">
+            <h3 class="text-2xl font-bold text-red-700 mb-4">⚠️ Bad Effects & Their Meanings</h3>
+            <div class="grid md:grid-cols-2 gap-4">
+                <div class="bg-white p-4 rounded-lg shadow-sm">
+                    <strong class="text-red-700">Air Pollution</strong>
+                    <p class="text-gray-600 text-sm mt-1">Dirty, smoky air from cars and factories causes breathing problems, allergies, and lung disease.</p>
+                </div>
+                <div class="bg-white p-4 rounded-lg shadow-sm">
+                    <strong class="text-red-700">Water Contamination</strong>
+                    <p class="text-gray-600 text-sm mt-1">Dirty water carries germs and chemicals that make us very sick and unsafe to drink.</p>
+                </div>
+                <div class="bg-white p-4 rounded-lg shadow-sm">
+                    <strong class="text-red-700">Soil Erosion</strong>
+                    <p class="text-gray-600 text-sm mt-1">When soil washes away, nothing grows well and we lose our food supply.</p>
+                </div>
+                <div class="bg-white p-4 rounded-lg shadow-sm">
+                    <strong class="text-red-700">Spread of Diseases</strong>
+                    <p class="text-gray-600 text-sm mt-1">A dirty environment helps germs and viruses spread faster and make more people ill.</p>
+                </div>
+                <div class="bg-white p-4 rounded-lg shadow-sm">
+                    <strong class="text-red-700">Deforestation</strong>
+                    <p class="text-gray-600 text-sm mt-1">Cutting down too many trees removes homes for wildlife, reduces clean air, and warms the planet.</p>
+                </div>
+                <div class="bg-white p-4 rounded-lg shadow-sm">
+                    <strong class="text-red-700">Waste Accumulation</strong>
+                    <p class="text-gray-600 text-sm mt-1">Too much trash piles up, poisons the land, and harms animals and people.</p>
+                </div>
+                <div class="bg-white p-4 rounded-lg shadow-sm">
+                    <strong class="text-red-700">Global Warming</strong>
+                    <p class="text-gray-600 text-sm mt-1">Earth gets too hot, ice melts, seas rise, and weather becomes dangerous and extreme.</p>
+                </div>
+                <div class="bg-white p-4 rounded-lg shadow-sm">
+                    <strong class="text-red-700">Loss of Wildlife</strong>
+                    <p class="text-gray-600 text-sm mt-1">When animals disappear, nature becomes unbalanced and affects all life including us.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 🎉 CONGRATULATIONS + RETURN TO MAP → Appears LAST -->
+    <div id="complete-screen" class="hidden container mx-auto px-4 py-10 max-w-xl text-center">
+        <div class="bg-white p-10 rounded-xl shadow-xl border-4 border-emerald-500">
+            <h2 class="text-4xl font-bold text-emerald-600 mb-4">🎉 Congratulations! 🎉</h2>
+            <p class="text-xl text-gray-700 mb-4">You sorted all cards correctly!</p>
+            <p class="text-lg text-gray-600 mb-8">You now understand the good benefits of protecting our environment and the bad effects of harming it. Keep making eco-friendly choices and help build a healthier, greener world for everyone! 🌍🌱</p>
+            <button onclick="location.href='map5.html'" class="bg-emerald-600 hover:bg-emerald-700 text-white px-8 py-3 rounded-lg text-lg font-medium shadow-md transition">
+                🗺 Return to Map
+            </button>
+        </div>
+    </div>
+
+    <!-- Time Up Screen -->
+    <div id="timeup-screen" class="hidden container mx-auto px-4 py-20 max-w-xl text-center">
+        <div class="bg-white p-10 rounded-xl shadow-xl border-4 border-red-500">
+            <h2 class="text-4xl font-bold text-red-600 mb-4">⏰ Time's Up!</h2>
+            <p class="text-xl text-gray-700 mb-6">You didn't finish sorting all cards in time. Try again!</p>
+            <button onclick="restartGame()" class="bg-red-600 hover:bg-red-700 text-white px-8 py-3 rounded-lg text-lg font-medium">Try Again</button>
+        </div>
+    </div>
+
+    <script>
+        // Game state
+        let timeLeft = 60;
+        let timerInterval;
+        let gameStarted = false;
+        let correctCount = 0;
+        let totalCards = 0;
+
+        // Card data
+        const cardsData = [
+            // Good Benefits
+            { text: "Clean Air", type: "good" },
+            { text: "Safe Drinking Water", type: "good" },
+            { text: "Healthy Soil", type: "good" },
+            { text: "Lower Disease Risk", type: "good" },
+            { text: "Biodiversity", type: "good" },
+            { text: "Fresh Food Supply", type: "good" },
+            { text: "Cooler Temperatures", type: "good" },
+            { text: "Mental Wellbeing", type: "good" },
+            // Bad Effects
+            { text: "Air Pollution", type: "bad" },
+            { text: "Water Contamination", type: "bad" },
+            { text: "Soil Erosion", type: "bad" },
+            { text: "Spread of Diseases", type: "bad" },
+            { text: "Deforestation", type: "bad" },
+            { text: "Waste Accumulation", type: "bad" },
+            { text: "Global Warming", type: "bad" },
+            { text: "Loss of Wildlife", type: "bad" }
+        ];
+
+        // Shuffle function
+        function shuffleArray(array) {
+            return [...array].sort(() => Math.random() - 0.5);
+        }
+
+        // Create cards
+        function createCards() {
+            const cardArea = document.getElementById('card-area');
+            cardArea.innerHTML = '';
+            const shuffled = shuffleArray(cardsData);
+            totalCards = shuffled.length;
+            correctCount = 0;
+            shuffled.forEach((item, index) => {
+                const card = document.createElement('div');
+                card.className = 'card bg-white border-2 border-gray-300 rounded-lg p-4 shadow-md w-40 h-24 flex items-center justify-center text-center font-medium text-gray-800';
+                card.draggable = true;
+                card.id = `card-${index}`;
+                card.dataset.type = item.type;
+                card.textContent = item.text;
+                card.addEventListener('dragstart', dragStart);
+                card.addEventListener('dragend', dragEnd);
+                cardArea.appendChild(card);
+            });
+        }
+
+        // Drag functions
+        function dragStart(e) {
+            if (!gameStarted) return;
+            e.dataTransfer.setData('text/plain', e.target.id);
+            e.target.classList.add('dragging');
+        }
+
+        function dragEnd(e) {
+            e.target.classList.remove('dragging');
+        }
+
+        function dragOver(e) {
+            if (!gameStarted) return;
+            e.preventDefault();
+            this.classList.add('bin-hover');
+        }
+
+        function dragLeave(e) {
+            this.classList.remove('bin-hover');
+        }
+
+        function drop(e) {
+            if (!gameStarted) return;
+            e.preventDefault();
+            this.classList.remove('bin-hover');
+            const cardId = e.dataTransfer.getData('text/plain');
+            const card = document.getElementById(cardId);
+            if (!card) return;
+            const binType = this.dataset.type;
+            const cardType = card.dataset.type;
+
+            // Check if correct
+            if (binType === cardType) {
+                this.appendChild(card);
+                card.style.opacity = '0.8';
+                card.style.cursor = 'default';
+                card.draggable = false;
+                correctCount++;
+                checkWin();
+            } else {
+                // Return to card area
+                document.getElementById('card-area').appendChild(card);
+                card.classList.add('animate-pulse');
+                setTimeout(() => card.classList.remove('animate-pulse'), 500);
+            }
+        }
+
+        // Check if all cards sorted → Show Summary FIRST, then Congratulations
+        function checkWin() {
+            if (correctCount === totalCards) {
+                clearInterval(timerInterval);
+                gameStarted = false;
+                setTimeout(() => {
+                    document.getElementById('game-screen').classList.add('hidden');
+                    document.getElementById('summary-screen').classList.remove('hidden'); // Step 1: Show all definitions
+                }, 800);
+
+                // Step 2: Show Congratulations + Return Button AFTER reading
+                setTimeout(() => {
+                    document.getElementById('summary-screen').classList.add('hidden');
+                    document.getElementById('complete-screen').classList.remove('hidden');
+                }, 12000); // 12 seconds to read all definitions
+            }
+        }
+
+        // Timer
+        function startTimer() {
+            timeLeft = 60;
+            document.getElementById('timer').textContent = timeLeft;
+            timerInterval = setInterval(() => {
+                timeLeft--;
+                document.getElementById('timer').textContent = timeLeft;
+                if (timeLeft <= 0) {
+                    clearInterval(timerInterval);
+                    gameStarted = false;
+                    document.getElementById('game-screen').classList.add('hidden');
+                    document.getElementById('timeup-screen').classList.remove('hidden');
+                }
+            }, 1000);
+        }
+
+        // Start game
+        function startGame() {
+            gameStarted = true;
+            document.getElementById('start-btn').disabled = true;
+            document.getElementById('start-btn').classList.add('opacity-50');
+            createCards();
+            startTimer();
+        }
+
+        // Restart game
+        function restartGame() {
+            clearInterval(timerInterval);
+            document.getElementById('complete-screen').classList.add('hidden');
+            document.getElementById('summary-screen').classList.add('hidden');
+            document.getElementById('timeup-screen').classList.add('hidden');
+            document.getElementById('game-screen').classList.remove('hidden');
+            document.getElementById('start-btn').disabled = false;
+            document.getElementById('start-btn').classList.remove('opacity-50');
+            document.getElementById('timer').textContent = '60';
+            gameStarted = false;
+        }
+
+        // Add event listeners to bins
+        document.querySelectorAll('.bin').forEach(bin => {
+            bin.addEventListener('dragover', dragOver);
+            bin.addEventListener('dragleave', dragLeave);
+            bin.addEventListener('drop', drop);
+        });
+
+        // Start button
+        document.getElementById('start-btn').addEventListener('click', startGame);
+    </script>
+</body>
+</html>

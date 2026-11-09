@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>ECOQUEST - Group Name</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+
+<style>
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+body{
+    height:80vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    overflow-y:auto;
+
+    /* Use the same background as your home page */
+    background-image:url("bg7.jpg");
+    background-size:cover;
+    background-position:center;
+
+    font-family:'Arial Rounded MT Bold',Comic Sans MS;
+}
+
+.container{
+
+    text-align:center;
+
+    padding:60px;
+
+    width:500px;
+
+    border-radius:25px;
+
+    backdrop-filter:blur(5px);
+
+    background:rgba(255,255,255,.12);
+
+    border:2px solid rgba(255,255,255,.2);
+
+    box-shadow:0 15px 40px rgba(0,0,0,.4);
+
+}
+
+h1{
+
+    font-family:'Orbitron',sans-serif;
+
+    color:white;
+
+    font-size:45px;
+
+    text-shadow:
+    0 0 10px #7CFC00,
+    0 0 20px #32CD32;
+
+    margin-bottom:15px;
+
+}
+
+p{
+
+    color:black;
+
+    font-size:20px;
+
+    margin-bottom:35px;
+
+}
+
+input{
+
+    width:100%;
+
+    padding:18px;
+
+    font-size:20px;
+
+    border:none;
+
+    border-radius:50px;
+
+    outline:none;
+
+    text-align:center;
+
+    background:rgba(255,255,255,.9);
+
+    font-family:'Poppins',sans-serif;
+
+}
+
+input::placeholder{
+
+    color:#777;
+
+}
+
+.continue-btn{
+
+    margin-top:35px;
+
+    padding:18px 70px;
+
+    font-size:24px;
+
+    font-weight:bold;
+
+    border:none;
+
+    border-radius:50px;
+
+    cursor:pointer;
+
+    color:white;
+
+    background:linear-gradient(45deg,#00c853,#64dd17);
+
+    transition:.3s;
+
+    box-shadow:0 0 25px rgba(0,255,0,.5);
+
+}
+
+.continue-btn:hover{
+
+    transform:scale(1.08);
+
+    box-shadow:
+    0 0 15px #7CFC00,
+    0 0 30px #32CD32,
+    0 0 60px #00ff00;
+
+}
+
+.continue-btn:active{
+
+    transform:scale(.95);
+
+}
+
+.footer{
+
+    margin-top:30px;
+
+    color:white;
+
+    opacity:.8;
+
+    font-size:15px;
+
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+<h1>ECOQUEST</h1>
+
+<p>Enter your Group Name</p>
+
+<input
+type="text"
+id="groupName"
+placeholder="Type your group name here...">
+
+<br>
+
+<button class="continue-btn" onclick="continueGame()">
+CONTINUE
+</button>
+
+<div class="footer">
+Your adventure begins here 🌿
+</div>
+
+</div>
+
+<script>
+
+function continueGame(){
+
+let group=document.getElementById("groupName").value.trim();
+
+if(group==""){
+
+alert("Please enter your group name!");
+
+return;
+
+}
+
+localStorage.setItem("groupName",group);
+
+window.location.href="game.html";
+
+}
+
+</script>
+
+</body>
+</html>

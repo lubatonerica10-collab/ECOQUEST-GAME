@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Puzzle 3</title>
+
+<style>
+
+body{
+margin:0;
+font-family:Arial, sans-serif;
+background:linear-gradient(135deg,#c8f7c5,#4CAF50);
+display:flex;
+flex-direction:column;
+align-items:center;
+}
+
+h1{
+color:#0b5d1e;
+margin-top:20px;
+}
+
+#top{
+display:flex;
+gap:40px;
+margin:15px;
+font-size:22px;
+font-weight:bold;
+}
+
+#board{
+display:grid;
+grid-template-columns:repeat(3,120px);
+grid-template-rows:repeat(3,120px);
+gap:4px;
+background:#145214;
+padding:4px;
+border-radius:10px;
+}
+
+.tile{
+width:120px;
+height:120px;
+border:1px solid white;
+background-image:url("pic3.jpg");
+background-size:360px 360px;
+cursor:pointer;
+}
+
+#msg{
+margin-top:20px;
+font-size:24px;
+font-weight:bold;
+color:#145214;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<h1>🧩 ECOQUEST Puzzle 3</h1>
+
+<div id="top">
+<div>⏰ <span id="time">02:00</span></div>
+<div>⭐ Score: <span id="score">20</span></div>
+</div>
+
+<div id="board"></div>
+
+<div id="msg"></div>
+
+<script>
+
+const board=document.getElementById("board");
+
+let pieces=[0,1,2,3,4,5,6,7,8];
+
+for(let i=pieces.length-1;i>0;i--){
+
+let j=Math.floor(Math.random()*(i+1));
+
+[pieces[i],pieces[j]]=[pieces[j],pieces[i]];
+
+}
+
+let first=null;
+
+function draw(){
+
+board.innerHTML="";
+
+pieces.forEach((piece,index)=>{
+
+const div=document.createElement("div");
+
+div.className="tile";
+
+div.style.backgroundPosition=`-${(piece%3)*120}px -${Math.floor(piece/3)*120}px`;
+
+div.onclick=()=>swap(index);
+
+board.appendChild(div);
+
+});
+
+checkSolved();
+
+}
+
+function swap(index){
+
+if(first===null){
+
+first=index;
+
+board.children[index].style.outline="4px solid yellow";
+
+}
+
+else{
+
+[pieces[first],pieces[index]]=[pieces[index],pieces[first]];
+
+first=null;
+
+draw();
+
+}
+
+}
+
+let seconds=120;
+
+const timer=setInterval(()=>{
+
+seconds--;
+
+let m=Math.floor(seconds/60);
+
+let s=seconds%60;
+
+document.getElementById("time").textContent=
+`${String(m).padStart(2,"0")}:${String(s).padStart(2,"0")}`;
+
+if(seconds<=0){
+
+clearInterval(timer);
+
+document.getElementById("score").textContent="10";
+
+alert("⏰ Time's Up!\nYou earned 10 points.");
+
+window.location.href="puzzle4.html";
+
+}
+
+},1000);
+
+function checkSolved(){
+
+let solved=true;
+
+for(let i=0;i<pieces.length;i++){
+
+if(pieces[i]!=i){
+
+solved=false;
+
+break;
+
+}
+
+}
+
+if(solved){
+
+clearInterval(timer);
+
+document.getElementById("msg").innerHTML="🎉 Puzzle Completed!";
+
+setTimeout(()=>{
+
+window.location.href="puzzle4.html";
+
+},2000);
+
+}
+
+}
+
+draw();
+
+</script>
+
+</body>
+</html>

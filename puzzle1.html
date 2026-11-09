@@ -1,0 +1,66 @@
+
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Puzzle 1</title>
+<style>
+body{margin:0;font-family:Arial;background:linear-gradient(135deg,#c8f7c5,#6bcf63);display:flex;flex-direction:column;align-items:center}
+h1{color:#145214}
+#top{display:flex;gap:30px;font-size:22px;font-weight:bold;margin:10px}
+#board{display:grid;grid-template-columns:repeat(3,120px);grid-template-rows:repeat(3,120px);gap:4px;background:#145214;padding:4px}
+.tile{width:120px;height:120px;border:1px solid #fff;background-image:url("pic1.jpg");background-size:360px 360px;cursor:pointer}
+#msg{margin-top:15px;font-size:22px}
+button{padding:10px 25px;font-size:18px}
+</style></head><body>
+<h1>🧩 ECOQUEST Puzzle 1</h1>
+<div id="top"><div>⏰ <span id="time">02:00</span></div><div>⭐ Score: <span id="score">20</span></div></div>
+<div id="board"></div>
+<div id="msg"></div>
+<script>
+const board=document.getElementById("board");
+let arr=[0,1,2,3,4,5,6,7,8];
+function shuffle(){for(let i=arr.length-1;i>0;i--){let j=Math.floor(Math.random()*(i+1));[arr[i],arr[j]]=[arr[j],arr[i]]}}
+shuffle();
+let first=null;
+function draw(){
+ board.innerHTML="";
+ arr.forEach((n,i)=>{
+  let d=document.createElement("div");
+  d.className="tile";
+  let x=(n%3)*120,y=Math.floor(n/3)*120;
+  d.style.backgroundPosition=`-${x}px -${y}px`;
+  d.onclick=()=>clickTile(i);
+  board.appendChild(d);
+ });
+ check();
+}
+function clickTile(i){
+ if(first===null){first=i;board.children[i].style.outline="4px solid yellow";}
+ else{
+  [arr[first],arr[i]]=[arr[i],arr[first]];
+  first=null;draw();
+ }
+}
+let score=20,sec=120;
+const t=setInterval(()=>{
+ sec--;
+ let m=Math.floor(sec/60),s=sec%60;
+ time.textContent=`${String(m).padStart(2,"0")}:${String(s).padStart(2,"0")}`;
+ if(sec<=0){
+   clearInterval(t);
+   score=10;
+   scoreEl();
+   alert("Time's up! You receive 10 points and continue.");
+   location.href="puzzle2.html";
+ }
+},1000);
+function scoreEl(){document.getElementById("score").textContent=score;}
+function check(){
+ if(arr.every((v,i)=>v===i)){
+   clearInterval(t);
+   msg.innerHTML="🎉 Puzzle Completed! +20 points";
+   setTimeout(()=>location.href="puzzle2.html",2000);
+ }
+}
+draw();
+</script>
+</body></html>

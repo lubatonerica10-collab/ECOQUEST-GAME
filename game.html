@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>ECOQUEST - Welcome</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+
+<style>
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+body{
+    height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    background:url("bg8.jpg") center/cover no-repeat;
+    font-family:'Poppins',sans-serif;
+}
+
+.container{
+    width:750px;
+    padding:50px;
+    text-align:center;
+
+    background:rgba(255,255,255,.12);
+    backdrop-filter:blur(10px);
+
+    border-radius:25px;
+    border:2px solid rgba(255,255,255,.2);
+
+    box-shadow:0 15px 40px rgba(0,0,0,.4);
+}
+
+h1{
+
+    font-family:'Orbitron',sans-serif;
+    color:white;
+    font-size:40px;
+
+    text-shadow:
+    0 0 10px #7CFC00,
+    0 0 20px #32CD32;
+
+    margin-bottom:25px;
+
+}
+
+#group{
+
+    color:#b9ff66;
+    font-weight:bold;
+
+}
+
+p{
+
+    color:black;
+
+    font-size:20px;
+
+    line-height:1.8;
+
+    text-align:justify;
+
+    margin-top:20px;
+
+}
+
+button{
+
+    margin-top:40px;
+
+    padding:18px 65px;
+
+    border:none;
+
+    border-radius:50px;
+
+    font-size:22px;
+
+    font-weight:bold;
+
+    color:white;
+
+    cursor:pointer;
+
+    background:linear-gradient(45deg,#00c853,#64dd17);
+
+    transition:.3s;
+
+    box-shadow:0 0 25px rgba(0,255,0,.5);
+
+}
+
+button:hover{
+
+    transform:scale(1.08);
+
+    box-shadow:
+    0 0 15px #7CFC00,
+    0 0 30px #32CD32,
+    0 0 60px #00ff00;
+
+}
+
+.footer{
+
+    margin-top:25px;
+    color:white;
+    opacity:.8;
+
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+<h1>Welcome, <span id="group"></span>! 🌿</h1>
+
+<p>
+Environmental health awareness helps people understand how their daily actions affect both their health and the environment. By practicing proper waste management, maintaining clean surroundings, conserving natural resources, and preventing pollution, individuals can reduce the spread of diseases and protect nature. Through this adventure, your team will discover fun and meaningful ways to care for the environment while promoting a healthier and safer community for everyone.
+</p>
+
+<button onclick="nextPage()">
+CONTINUE
+</button>
+
+<div class="footer">
+🌎 Learn • Play • Protect the Planet 🌱
+</div>
+
+</div>
+
+<script>
+
+document.getElementById("group").innerHTML =
+localStorage.getItem("groupName") || "Players";
+
+function nextPage(){
+
+window.location.href="instructions.html";
+
+}
+
+</script>
+
+</body>
+</html>
